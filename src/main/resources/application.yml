@@ -1,6 +1,13 @@
 spring:
   application:
     name: LBYTECH-AI-AGENT
+  ai:
+    dashscope:
+      api-key: ${API-KEY}
+      chat:
+        options:
+          model: qwen-plus
+
 server:
   port: 8123
   servlet:

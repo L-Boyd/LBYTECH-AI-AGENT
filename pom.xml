@@ -67,6 +67,13 @@
             <version>2.19.1</version>
         </dependency>
 
+        <!--spring ai alibaba-->
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter</artifactId>
+            <version>1.0.0-M6.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
