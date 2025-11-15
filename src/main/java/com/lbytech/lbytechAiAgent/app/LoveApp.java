@@ -3,6 +3,7 @@ package com.lbytech.lbytechAiAgent.app;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
@@ -32,7 +33,8 @@ public class LoveApp {
                 .defaultSystem(SYSTEM_PROMPT)
                 // 默认拦截器，之后调用chatClient时，会先调用拦截器
                 .defaultAdvisors(
-                        new MessageChatMemoryAdvisor(chatMemory)
+                        new MessageChatMemoryAdvisor(chatMemory),   // 记忆拦截器
+                        new SimpleLoggerAdvisor()   // 日志拦截器
                 )
                 .build();
     }

@@ -34,3 +34,7 @@ knife4j:
 lbytech:
   ali:
     api-key: ${API-KEY}
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: DEBUG
