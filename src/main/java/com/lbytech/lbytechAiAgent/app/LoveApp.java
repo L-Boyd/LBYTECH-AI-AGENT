@@ -1,5 +1,7 @@
 package com.lbytech.lbytechAiAgent.app;
 
+import com.lbytech.lbytechAiAgent.advisor.CustomLoggerAdvisor;
+import com.lbytech.lbytechAiAgent.advisor.ReReadingAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -34,7 +36,9 @@ public class LoveApp {
                 // 默认拦截器，之后调用chatClient时，会先调用拦截器
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory),   // 记忆拦截器
-                        new SimpleLoggerAdvisor()   // 日志拦截器
+                        //new SimpleLoggerAdvisor()   // 日志拦截器
+                        new CustomLoggerAdvisor(),   // 自定义日志拦截器
+                        new ReReadingAdvisor()   // 自定义ReReading拦截器
                 )
                 .build();
     }
