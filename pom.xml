@@ -88,6 +88,13 @@
             <version>4.38.0</version>
         </dependency>
 
+        <!--因为记忆持久化的Message接口的实现类没有实现序列化，所以json序列化会有很多问题，kryo是一个高性能序列化库-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

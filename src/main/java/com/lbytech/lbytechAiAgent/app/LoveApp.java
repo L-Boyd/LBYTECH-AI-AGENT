@@ -2,6 +2,7 @@ package com.lbytech.lbytechAiAgent.app;
 
 import com.lbytech.lbytechAiAgent.advisor.CustomLoggerAdvisor;
 import com.lbytech.lbytechAiAgent.advisor.ReReadingAdvisor;
+import com.lbytech.lbytechAiAgent.chatmemory.FileBasedChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -12,6 +13,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.List;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
@@ -32,6 +34,9 @@ public class LoveApp {
     public LoveApp(ChatModel dashscopeChatModel) {
         // 初始化基于内存的对话记忆
         ChatMemory chatMemory = new InMemoryChatMemory();
+        // 基于文件的对话记忆
+        String fileDir = System.getProperty("user.dir") + "/tmp/chat_memory";
+        chatMemory = new FileBasedChatMemory(fileDir);
         chatClient = ChatClient.builder(dashscopeChatModel)
                 // 系统预设
                 .defaultSystem(SYSTEM_PROMPT)
