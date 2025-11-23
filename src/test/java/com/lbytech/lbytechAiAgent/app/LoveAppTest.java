@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class LoveAppTest {
 
@@ -39,5 +37,13 @@ class LoveAppTest {
         String message = "你好，我是博哥，我想知道非暴力沟通应该如何运用在恋爱关系中";
         LoveApp.LoveReport loveReport = loveApp.doChatWithReport(message, chatId);
          Assertions.assertNotNull(loveReport);
+    }
+
+    @Test
+    void doChatWithRag() {
+        String chatId = UUID.randomUUID().toString();
+        String message = "我有个朋友已经结婚了，但是婚后关系不太亲密，怎么办？";
+        String answer = loveApp.doChatWithRag(message, chatId);
+        Assertions.assertNotNull(answer);
     }
 }
