@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
@@ -111,6 +112,31 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
                 .advisors(new CustomLoggerAdvisor())    // 开启日志
                 .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))    // 应用RAG知识库
+                .call()
+                .chatResponse();
+
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    @Autowired
+    private Advisor loveAppRagCloudAdvisor;
+
+    /**
+     * 和RAG知识库进行对话（云知识库）
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithRagCloud(String message, String chatId) {
+        // 调用AI模型
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(advisorSpec -> advisorSpec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 对话id
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
+                .advisors(new CustomLoggerAdvisor())    // 开启日志
+                .advisors(loveAppRagCloudAdvisor)    // 应用RAG检索增强服务
                 .call()
                 .chatResponse();
 
