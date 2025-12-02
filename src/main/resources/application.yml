@@ -7,6 +7,16 @@ spring:
       chat:
         options:
           model: qwen-plus
+    vectorstore:
+      pgvector:
+      index-type: HNSW  # 索引类型
+      distance-type: COSINE_DISTANCE  # 距离类型（哪种方式进行相似度检索）
+      dimensions: 1536  # 向量维度
+      max-document-batch-size: 10000 # Optional: Maximum number of documents per batch（每次批量处理的文档数量）
+  datasource:
+    url: jdbc:postgresql://rm-cn-rno4js5ki00012ao.rwlb.rds.aliyuncs.com:5432/ai_agent
+    username: ${PG-USERNAME}
+    password: ${PG-PASSWORD}
 
 server:
   port: 8123
