@@ -2,6 +2,7 @@ package com.lbytech.lbytechAiAgent.app;
 
 import com.lbytech.lbytechAiAgent.advisor.CustomLoggerAdvisor;
 import com.lbytech.lbytechAiAgent.chatmemory.FileBasedChatMemory;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -137,6 +138,31 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
                 .advisors(new CustomLoggerAdvisor())    // 开启日志
                 .advisors(loveAppRagCloudAdvisor)    // 应用RAG检索增强服务
+                .call()
+                .chatResponse();
+
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    @Resource
+    private VectorStore pgVectorVectorStore;
+
+    /**
+     * 和RAG知识库进行对话（pgvector）
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithRagPgVector(String message, String chatId) {
+        // 调用AI模型
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(advisorSpec -> advisorSpec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 对话id
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
+                .advisors(new CustomLoggerAdvisor())    // 开启日志
+                .advisors(new QuestionAnswerAdvisor(pgVectorVectorStore))    // 应用RAG检索增强服务
                 .call()
                 .chatResponse();
 
