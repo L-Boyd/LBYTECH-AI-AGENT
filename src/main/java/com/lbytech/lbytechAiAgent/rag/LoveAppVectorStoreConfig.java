@@ -19,11 +19,17 @@ public class LoveAppVectorStoreConfig {
     @Autowired
     private LoveAppDocumentLoader loveAppDocumentLoader;
 
+    @Autowired
+    private MyTokenTextSplitter myTokenTextSplitter;
+
     @Bean
     public VectorStore loveAppVectorStore(EmbeddingModel embeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
+        // 加载文档
         List<Document> documentList = loveAppDocumentLoader.loadLoveAppDocuments();
-        simpleVectorStore.add(documentList);
+        // 自主切分文档
+        List<Document> splitDocuments = myTokenTextSplitter.splitCustomized(documentList);
+        simpleVectorStore.add(splitDocuments);
         return simpleVectorStore;
     }
 
