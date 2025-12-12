@@ -2,6 +2,7 @@ package com.lbytech.lbytechAiAgent.app;
 
 import com.lbytech.lbytechAiAgent.advisor.CustomLoggerAdvisor;
 import com.lbytech.lbytechAiAgent.chatmemory.FileBasedChatMemory;
+import com.lbytech.lbytechAiAgent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -149,6 +150,9 @@ public class LoveApp {
     @Resource
     private VectorStore pgVectorVectorStore;
 
+    @Autowired
+    private QueryRewriter queryRewriter;
+
     /**
      * 和RAG知识库进行对话（pgvector）
      * @param message
@@ -156,9 +160,12 @@ public class LoveApp {
      * @return
      */
     public String doChatWithRagPgVector(String message, String chatId) {
+        // 先进行查询重写
+        String rewrittenPrompt = queryRewriter.doQueryRewrite(message);
+
         // 调用AI模型
         ChatResponse chatResponse = chatClient.prompt()
-                .user(message)
+                .user(rewrittenPrompt)
                 .advisors(advisorSpec -> advisorSpec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 对话id
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
                 .advisors(new CustomLoggerAdvisor())    // 开启日志
