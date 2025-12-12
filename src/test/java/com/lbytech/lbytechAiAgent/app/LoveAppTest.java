@@ -62,4 +62,13 @@ class LoveAppTest {
         String answer = loveApp.doChatWithRagPgVector(message, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChatWithCustomAdvisor() {
+        String chatId = UUID.randomUUID().toString();
+        String message = "我有个朋友已经结婚了，但是婚后关系不太亲密，怎么办？";
+        // 把过滤标签设置为“单身”，应该检索不到文章
+        String answer = loveApp.doChatWithCustomAdvisor(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }
