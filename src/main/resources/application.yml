@@ -14,7 +14,7 @@ spring:
       dimensions: 1536  # 向量维度
       max-document-batch-size: 10000 # Optional: Maximum number of documents per batch（每次批量处理的文档数量）
   datasource:
-    url: jdbc:postgresql://rm-cn-rno4js5ki00012ao.rwlb.rds.aliyuncs.com:5432/ai_agent
+    url: jdbc:postgresql://pgm-wz9w1bsn24436w61wo.rwlb.rds.aliyuncs.com:5432/ai_agent
     username: ${PG-USERNAME}
     password: ${PG-PASSWORD}
 
@@ -44,6 +44,9 @@ knife4j:
 lbytech:
   ali:
     api-key: ${API-KEY}
+  searchapi:
+    api-key: ${SEARCHAPI-KEY}
+
 
 logging:
   level:
