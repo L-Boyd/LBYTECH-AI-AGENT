@@ -22,7 +22,7 @@ public class ResourceDownloadTool {
     @Tool(description = "Download resource from the given url with a specified name")
     public String downloadResource(@ToolParam(description = "Resource url to download") String url,
                                    @ToolParam(description = "The file name of the downloaded resource") String fileName) {
-        String fileDir = FileConstant.FILE_SAVE_PATH + "download";
+        String fileDir = FileConstant.FILE_SAVE_PATH + "/download";
         String filePath = fileDir + "/" + fileName;
         try {
             // 确保目录存在

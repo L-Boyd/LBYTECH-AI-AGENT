@@ -3,6 +3,7 @@ package com.lbytech.lbytechAiAgent.tools;
 import jakarta.annotation.Resource;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbacks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ToolRegistraion {
+
+    @Autowired
+    private WebSearchTool webSearchTool;
 
     /**
      * 注册所有工具
@@ -24,7 +28,7 @@ public class ToolRegistraion {
     public ToolCallback[] allTools() {
         return ToolCallbacks.from(
                 new FileOperationTool(),
-                new WebSearchTool(),
+                webSearchTool,
                 new WebScrapingTool(),
                 new ResourceDownloadTool(),
                 new TerminalOperationTool(),
