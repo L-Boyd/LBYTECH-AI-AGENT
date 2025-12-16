@@ -125,6 +125,13 @@
             <version>1.0.0-M6</version>
         </dependency>
 
+        <!--jsoup HTML解析器-->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.19.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
