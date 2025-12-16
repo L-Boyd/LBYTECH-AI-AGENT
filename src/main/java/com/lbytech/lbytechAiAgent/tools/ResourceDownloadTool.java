@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * 资源下载工具
  */
-public class ResourceDonloadTool {
+public class ResourceDownloadTool {
 
     /**
      * 下载资源
