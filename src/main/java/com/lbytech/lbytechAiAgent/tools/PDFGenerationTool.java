@@ -43,6 +43,7 @@ public class PDFGenerationTool {
 
                 // 创建段落
                 document.add(new Paragraph(content));
+                document.close();
             }
 
             return "PDF generated successfully to: " + filePath;
