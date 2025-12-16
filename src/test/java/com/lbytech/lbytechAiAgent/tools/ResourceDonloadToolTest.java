@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ResourceDonloadToolTest {
+class ResourceDownloadToolTest {
 
-    private ResourceDonloadTool resourceDonloadTool = new ResourceDonloadTool();
+    private ResourceDownloadTool resourceDonloadTool = new ResourceDownloadTool();
 
     @Test
     void downloadResource() {
