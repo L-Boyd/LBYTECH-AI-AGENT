@@ -6,7 +6,7 @@ spring:
       api-key: ${API-KEY}
       chat:
         options:
-          model: qwen-plus
+          model: qwen3-max
     vectorstore:
       pgvector:
       index-type: HNSW  # 索引类型

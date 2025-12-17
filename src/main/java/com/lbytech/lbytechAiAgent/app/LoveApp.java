@@ -14,6 +14,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,6 +57,7 @@ public class LoveApp {
 
     /**
      * 基础对话功能
+     *
      * @param message
      * @param chatId
      * @return
@@ -80,6 +82,7 @@ public class LoveApp {
 
     /**
      * 恋爱报告功能（结构化输出）
+     *
      * @param message
      * @param chatId
      * @return
@@ -103,6 +106,7 @@ public class LoveApp {
 
     /**
      * 和RAG知识库进行对话
+     *
      * @param message
      * @param chatId
      * @return
@@ -128,6 +132,7 @@ public class LoveApp {
 
     /**
      * 和RAG知识库进行对话（云知识库）
+     *
      * @param message
      * @param chatId
      * @return
@@ -156,6 +161,7 @@ public class LoveApp {
 
     /**
      * 和RAG知识库进行对话（pgvector）
+     *
      * @param message
      * @param chatId
      * @return
@@ -181,6 +187,7 @@ public class LoveApp {
 
     /**
      * 和RAG知识库进行对话（自定义检索器）
+     *
      * @param message
      * @param chatId
      * @return
@@ -209,5 +216,29 @@ public class LoveApp {
         return content;
     }
 
+    @Autowired
+    private ToolCallback[] allTools;
+
+    /**
+     * 支持调用工具的对话
+     *
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatCanCallTools(String message, String chatId) {
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(advisorSpec -> advisorSpec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 对话id
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
+                .advisors(new CustomLoggerAdvisor())
+                .tools(allTools)
+                .call()
+                .chatResponse();
+
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
 }
 

@@ -71,4 +71,38 @@ class LoveAppTest {
         String answer = loveApp.doChatWithCustomAdvisor(message, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChatCanCallTools() {
+        String chatId = UUID.randomUUID().toString();
+        // 测试网页搜索问题
+        String message1 = "周末想带女朋友去上海约会，推荐几个合适的小众情侣打卡地";
+        String answer = loveApp.doChatCanCallTools(message1, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 测试网页抓取
+        String message2 = "最近吵架了，看看http://www.lbytech.cn的其他情侣是怎么解决矛盾的";
+        answer = loveApp.doChatCanCallTools(message2, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 测试图片下载
+        String message3 = "下载一张适合做手机壁纸的星空情侣图片为文件";
+        answer = loveApp.doChatCanCallTools(message3, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 测试终端操作
+        String message4 = "执行python3脚本来生成数据分析报告";
+        answer = loveApp.doChatCanCallTools(message4, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 测试文件操作
+        String message5 = "保存我的恋爱档案为文件";
+        answer = loveApp.doChatCanCallTools(message5, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 测试PDF生成
+        String message6 = "生成一份’七夕约会计划‘PDF，包含餐厅预定、活动流程和礼物清单";
+        answer = loveApp.doChatCanCallTools(message6, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }
