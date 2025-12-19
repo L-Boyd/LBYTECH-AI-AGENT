@@ -105,4 +105,12 @@ class LoveAppTest {
         answer = loveApp.doChatCanCallTools(message6, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChatWithMcp() {
+        String chatId = UUID.randomUUID().toString();
+        String message1 = "周末想带女朋友去上海约会，推荐几个合适的小众情侣打卡地。如有调用工具，请告诉我。";
+        String answer = loveApp.doChatWithMcp(message1, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }

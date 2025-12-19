@@ -6,13 +6,18 @@ spring:
       api-key: ${API-KEY}
       chat:
         options:
-          model: qwen3-max
+          model: ${AI-MODEL}
     vectorstore:
       pgvector:
       index-type: HNSW  # 索引类型
       distance-type: COSINE_DISTANCE  # 距离类型（哪种方式进行相似度检索）
       dimensions: 1536  # 向量维度
       max-document-batch-size: 10000 # Optional: Maximum number of documents per batch（每次批量处理的文档数量）
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:static/mcp/win-mcp-servers.json
+
   datasource:
     url: jdbc:postgresql://localhost:5432/lby_ai_agent
     username: ${PG-USERNAME}

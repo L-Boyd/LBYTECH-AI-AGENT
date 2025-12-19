@@ -15,6 +15,7 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -233,6 +234,36 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
                 .advisors(new CustomLoggerAdvisor())
                 .tools(allTools)
+                .call()
+                .chatResponse();
+
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    /**
+     * spring ai mcp服务启动的时候会自动读取mcp-servers.json文件中的配置，
+     * 找到所有的工具，
+     * 自动注册到ToolCallbackProvider中
+     */
+    @Autowired
+    private ToolCallbackProvider toolCallbackProvider;
+
+    /**
+     * 支持调用工具的对话（使用spring ai mcp服务）
+     *
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithMcp(String message, String chatId) {
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(advisorSpec -> advisorSpec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) // 对话id
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 从记忆中检索的消息数量
+                .advisors(new CustomLoggerAdvisor())
+                .tools(toolCallbackProvider)
                 .call()
                 .chatResponse();
 
