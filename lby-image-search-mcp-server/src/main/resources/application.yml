@@ -1,3 +1,8 @@
 spring:
   application:
     name: lby-image-search-mcp-server
+  profiles:
+    active: stdio # 默认激活配置文件
+
+server:
+  port: 8080

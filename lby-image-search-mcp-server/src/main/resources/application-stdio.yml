@@ -1,0 +1,11 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: lby-image-search-mcp-server
+        version: 0.0.1
+        type: SYNC
+        stdio: true
+  main:
+    web-application-type: none  # stdio??????web??
+    banner-mode: off
