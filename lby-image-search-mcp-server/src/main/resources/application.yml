@@ -6,3 +6,7 @@ spring:
 
 server:
   port: 8080
+
+lbytech:
+  pexels:
+    apiKey: ${PEXELS_API_KEY}
