@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource(value = "file:../environmentVariables.env", ignoreResourceNotFound = false)
+@PropertySource(value = "file:./environmentVariables.env", ignoreResourceNotFound = false)
 public class LbyImageSearchMcpServerApplication {
 
     public static void main(String[] args) {
