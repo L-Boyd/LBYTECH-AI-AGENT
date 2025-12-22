@@ -16,16 +16,16 @@ spring:
     mcp:
       client:
         stdio:
-          # servers-configuration: classpath:static/mcp/win-mcp-servers.json
-          root-change-notification: true
-          connections:
-            amap-maps:
-              command: npx.cmd
-              args:
-                - -y
-                - "@amap/amap-maps-mcp-server"
-              env:
-                AMAP_MAPS_API_KEY: ${HMAP-API-KEY}
+          servers-configuration: classpath:static/mcp/win-mcp-servers.json
+#          root-change-notification: true
+#          connections:
+#            amap-maps:
+#              command: npx.cmd
+#              args:
+#                - -y
+#                - "@amap/amap-maps-mcp-server"
+#              env:
+#                AMAP_MAPS_API_KEY: ${HMAP-API-KEY}
 
   datasource:
     url: jdbc:postgresql://localhost:5432/lby_ai_agent
