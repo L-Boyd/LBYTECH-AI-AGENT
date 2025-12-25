@@ -32,7 +32,8 @@ public class ToolRegistraion {
                 new WebScrapingTool(),
                 new ResourceDownloadTool(),
                 new TerminalOperationTool(),
-                new PDFGenerationTool()
+                new PDFGenerationTool(),
+                new TerminateTool()
         );
     }
 

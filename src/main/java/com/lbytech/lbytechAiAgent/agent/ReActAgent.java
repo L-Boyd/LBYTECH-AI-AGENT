@@ -1,9 +1,16 @@
 package com.lbytech.lbytechAiAgent.agent;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Resoning and Acting 模式的代理抽象类
  * 实现了思考-行动的循环模式
  */
+@Slf4j
+@Data
+@EqualsAndHashCode(callSuper = true)
 public abstract class ReActAgent extends BaseAgent {
 
     /**
