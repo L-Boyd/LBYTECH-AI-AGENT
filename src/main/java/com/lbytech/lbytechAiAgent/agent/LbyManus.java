@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class LbyManus extends ToolCallAgent {
 
-    public LbyManus(ToolCallback[] allTools, ChatModel dashscopeChatModel) {
-        super(allTools);
+    public LbyManus(ToolCallback[] allTools, ToolCallbackProvider toolCallbackProvider, ChatModel dashscopeChatModel) {
+        super(allTools, toolCallbackProvider);
         this.setName("LbyManus");
         this.setSystemPrompt("""
                 You are LbyManus, an all-capable AI assistant, aimed at solving any task presented by the user. 

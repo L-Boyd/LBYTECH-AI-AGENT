@@ -18,6 +18,7 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.model.tool.ToolExecutionResult;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,8 @@ public class ToolCallAgent extends ReActAgent{
 
     // 可用的工具
     private final ToolCallback[] availableTools;
+    // 工具提供者(方便用MCP）
+    private ToolCallbackProvider toolCallbackProvider;
 
     // 工具调用信息的响应结果（要调用哪些工具）
     private ChatResponse toolCallChatResponse;
@@ -46,6 +49,16 @@ public class ToolCallAgent extends ReActAgent{
     public ToolCallAgent(ToolCallback[] availableTools) {
         super();
         this.availableTools = availableTools;
+        this.toolCallingManager = ToolCallingManager.builder().build();
+        this.chatOptions = DashScopeChatOptions.builder()   // 百炼和spring ai原生配置方式有点不兼容
+                .withProxyToolCalls(true)   // 禁用spring ai内置的工具调用机制，自己维护选项和消息上下文
+                .build();
+    }
+
+    public ToolCallAgent(ToolCallback[] availableTools, ToolCallbackProvider toolCallbackProvider) {
+        super();
+        this.availableTools = availableTools;
+        this.toolCallbackProvider = toolCallbackProvider;
         this.toolCallingManager = ToolCallingManager.builder().build();
         this.chatOptions = DashScopeChatOptions.builder()   // 百炼和spring ai原生配置方式有点不兼容
                 .withProxyToolCalls(true)   // 禁用spring ai内置的工具调用机制，自己维护选项和消息上下文
@@ -71,6 +84,7 @@ public class ToolCallAgent extends ReActAgent{
             ChatResponse chatResponse = chatClient.prompt(prompt)
                     .system(this.getSystemPrompt())
                     .tools(this.availableTools)
+                    .tools(this.toolCallbackProvider)
                     .call()
                     .chatResponse();
             this.toolCallChatResponse = chatResponse;
