@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LbyManus extends ToolCallAgent {
 
-    public LbyManus(ToolCallback[] allTools, ToolCallbackProvider toolCallbackProvider, ChatModel dashscopeChatModel) {
+    public LbyManus(ToolCallback[] allTools, ChatModel dashscopeChatModel) {
         super(allTools);
         this.setName("LbyManus");
         this.setSystemPrompt("""
