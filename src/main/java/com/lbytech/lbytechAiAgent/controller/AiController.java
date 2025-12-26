@@ -1,6 +1,10 @@
 package com.lbytech.lbytechAiAgent.controller;
 
+import com.lbytech.lbytechAiAgent.agent.LbyManus;
 import com.lbytech.lbytechAiAgent.app.LoveApp;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,15 @@ public class AiController {
     @Autowired
     private LoveApp loveApp;
 
+    @Autowired
+    private ToolCallback[] allTools;
+
+    @Autowired
+    private ToolCallbackProvider toolCallbackProvider;
+
+    @Autowired
+    private ChatModel dashscopeChatModel;
+
     /**
      * 同步调用LoveApp
      *
@@ -30,7 +43,7 @@ public class AiController {
         return loveApp.doChat(message, chatId);
     }
 
-     /**
+    /**
      * sse流式调用LoveApp
      *
      * @param message 消息内容
@@ -65,5 +78,17 @@ public class AiController {
                 }, sseEmitter::completeWithError, sseEmitter::complete);
 
         return sseEmitter;
+    }
+
+    /**
+     * sse流式调用LbyManus
+     *
+     * @param message 消息内容
+     * @return 回复内容流
+     */
+    @GetMapping("/manus/chat")
+    public SseEmitter doChatWithLbyManus(String message) {
+        LbyManus lbyManus = new LbyManus(allTools, toolCallbackProvider, dashscopeChatModel);
+        return lbyManus.runByStream(message);
     }
 }

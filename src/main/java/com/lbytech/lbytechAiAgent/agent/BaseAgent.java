@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 抽象基础代理类，用于管理代理状态和执行，
@@ -96,6 +99,96 @@ public abstract class BaseAgent {
             // 清理资源
             this.cleanup();
         }
+    }
+
+    /**
+     * 执行代理，根据用户提示生成响应，流式返回
+     *
+     * @param userPrompt 用户输入的提示
+     * @return 代理生成的响应
+     */
+    public SseEmitter runByStream(String userPrompt) {
+        // 超时时间设置为3000秒的SseEmitter
+        SseEmitter sseEmitter = new SseEmitter(300000L);
+
+        // 异步执行，不然SseEmitter返回不出去
+        CompletableFuture.runAsync(() -> {
+            try {
+                // 基础校验
+                if (state != AgentState.IDLE) {
+                    sseEmitter.send("Agent is not idle, current state: " + state);
+                    sseEmitter.complete();
+                    return;
+                }
+                if (StrUtil.isBlank(userPrompt)) {
+                    sseEmitter.send("Agent userPrompt is empty");
+                    sseEmitter.complete();
+                    return;
+                }
+            } catch (IOException e) {
+                sseEmitter.completeWithError(e);
+            }
+
+            try {
+                // 执行
+                this.state = AgentState.RUNNING;
+                // 记录消息上下文
+                messageList.add(new UserMessage(userPrompt));
+                // 结果列表
+                List<String> results = new ArrayList<>();
+                for (int i = 0; i < maxStep && this.state != AgentState.FINISHED; i++) {
+                    currentStep = i + 1;
+                    log.info("Current step: {}/{}", currentStep, maxStep);
+                    // 执行一步
+                    String result = this.step();
+                    results.add("Step " + currentStep + ": " + result);
+                    results.add(result);
+
+                    // 输出当前这一步的结果
+                    sseEmitter.send(result);
+                }
+
+                if (currentStep >= maxStep) {
+                    this.state = AgentState.FINISHED;
+                    results.add("Terminated: reached max step (" + maxStep + ")");
+                    sseEmitter.send("Terminated: reached max step (" + maxStep + ")");
+                }
+                sseEmitter.complete();
+            } catch (Exception e) {
+                state = AgentState.ERROR;
+                log.error("执行错误:{}", e.getMessage());
+                try {
+                    sseEmitter.send("执行错误:" + e.getMessage());
+                } catch (IOException ex) {
+                    sseEmitter.completeWithError(ex);
+                }
+            } finally {
+                // 清理资源
+                this.cleanup();
+            }
+        });
+
+        // 超时回调
+        sseEmitter.onTimeout(() -> {
+            state = AgentState.ERROR;
+            log.error("Agent timeout");
+            try {
+                sseEmitter.send("Agent timeout after " + currentStep + " steps");
+            } catch (IOException e) {
+                sseEmitter.completeWithError(e);
+            }
+        });
+
+        // 完成回调
+        sseEmitter.onCompletion(() -> {
+            if (this.state == AgentState.RUNNING) {
+                this.state = AgentState.FINISHED;
+            }
+            this.cleanup();
+            log.info("Agent finished");
+        });
+
+        return sseEmitter;
     }
 
     /**
